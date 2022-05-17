@@ -2,6 +2,7 @@ const express = require("express");
 const Campground = require("../models/campground");
 const { campgroundSchema } = require("../schemas");
 const ExpressError = require("../utils/ExpressError");
+const { isLoggedIn } = require("../middleware");
 
 const router = express.Router();
 
@@ -26,7 +27,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //New
-router.get("/new", async (req, res, next) => {
+router.get("/new", isLoggedIn, async (req, res, next) => {
   try {
     res.render("campgrounds/new");
   } catch (error) {
@@ -35,7 +36,7 @@ router.get("/new", async (req, res, next) => {
 });
 
 //Create
-router.post("/", validateCampground, async (req, res, next) => {
+router.post("/", isLoggedIn, validateCampground, async (req, res, next) => {
   try {
     const createCampground = await Campground.create(req.body.campground);
     req.flash("success", "Successfully created a new campground");
@@ -62,7 +63,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Edit
-router.get("/:id/edit", async (req, res, next) => {
+router.get("/:id/edit", isLoggedIn, async (req, res, next) => {
   try {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {
@@ -77,7 +78,7 @@ router.get("/:id/edit", async (req, res, next) => {
 
 //Update
 // TODO: why not joi validation in update request
-router.put("/:id", validateCampground, async (req, res, next) => {
+router.put("/:id", isLoggedIn, validateCampground, async (req, res, next) => {
   try {
     if (!req.body.campground)
       throw new ExpressError("Enter all the required fields", 400);
@@ -93,7 +94,7 @@ router.put("/:id", validateCampground, async (req, res, next) => {
 });
 
 //Delete
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", isLoggedIn, async (req, res, next) => {
   try {
     await Campground.findByIdAndDelete(req.params.id);
     req.flash("success", "Successfully deleted campground");

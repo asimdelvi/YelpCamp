@@ -4,10 +4,15 @@ const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError");
-const campgrounds = require("./routes/campgrounds");
-const reviews = require("./routes/reviews");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const User = require("./models/user");
+// const LocalStrategy = require("passport-local");
+
+const campgroundRoutes = require("./routes/campgrounds");
+const reviewRoutes = require("./routes/reviews");
+const userRoutes = require("./routes/users");
 
 mongoose
   .connect("mongodb://localhost:27017/yelp-camp")
@@ -29,6 +34,7 @@ app.engine("ejs", ejsMate);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// * Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -48,15 +54,29 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+// * Passport
+app.use(passport.initialize());
+app.use(passport.session());
+// passport.use(new LocalStrategy(User.authenticate()));
+passport.use(User.createStrategy());
+
+// Specifies how data will be stored in session and retrieved from the session.
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Locals which can be accessed by all of the templates.
 app.use((req, res, next) => {
+  // for Login, register, logout page display toggle
+  res.locals.currentUser = req.user;
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();
 });
 
 // * Routers
-app.use("/campgrounds", campgrounds);
-app.use("/campgrounds/:id/reviews", reviews);
+app.use("/campgrounds", campgroundRoutes);
+app.use("/campgrounds/:id/reviews", reviewRoutes);
+app.use("/", userRoutes);
 
 app.get("/", (req, res) => {
   res.render("home");
@@ -66,6 +86,7 @@ app.all("*", (req, res, next) => {
   next(new ExpressError("Not found", 404));
 });
 
+// * Error Handling
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   // if we write default message value as destructured value above,
@@ -74,4 +95,4 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen(3080, () => console.log("listening on port 3080"));
+app.listen(3090, () => console.log("listening on port 3090"));
