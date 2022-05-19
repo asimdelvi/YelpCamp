@@ -1,28 +1,17 @@
 const express = require("express");
-const { reviewSchema } = require("../schemas");
-const ExpressError = require("../utils/ExpressError");
 const Campground = require("../models/campground");
 const Review = require("../models/review");
-
+const { validateReview, isLoggedIn, isReviewAuthor } = require("../middleware");
 /* routers does not includes the params of parent in the child routes, 
   so parent and child route params have to be merged using mergeParams */
 const router = express.Router({ mergeParams: true });
 
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const message = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(message, 400);
-  } else {
-    next();
-  }
-};
-
 //Create Review
-router.post("/", validateReview, async (req, res, next) => {
+router.post("/", isLoggedIn, validateReview, async (req, res, next) => {
   try {
     const campground = await Campground.findById(req.params.id);
     const review = await new Review(req.body.review);
+    review.author = req.user.id;
     await campground.reviews.push(review);
     await review.save();
     await campground.save();
@@ -34,16 +23,21 @@ router.post("/", validateReview, async (req, res, next) => {
 });
 
 //Delete Review
-router.delete("/:reviewId", async (req, res, next) => {
-  try {
-    const { id, reviewId } = req.params;
-    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId);
-    req.flash("success", "Successfully deleted review");
-    res.redirect(`/campgrounds/${id}`);
-  } catch (error) {
-    next(error);
+router.delete(
+  "/:reviewId",
+  isLoggedIn,
+  isReviewAuthor,
+  async (req, res, next) => {
+    try {
+      const { id, reviewId } = req.params;
+      await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+      await Review.findByIdAndDelete(reviewId);
+      req.flash("success", "Successfully deleted review");
+      res.redirect(`/campgrounds/${id}`);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 module.exports = router;

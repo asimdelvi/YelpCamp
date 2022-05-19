@@ -67,7 +67,9 @@ passport.deserializeUser(User.deserializeUser());
 // Locals which can be accessed by all of the templates.
 app.use((req, res, next) => {
   // for Login, register, logout page display toggle
+  // user will be automatically added in the req object, when logged in.
   res.locals.currentUser = req.user;
+  console.log(req.user);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();

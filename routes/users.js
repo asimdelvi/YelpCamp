@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const passport = require("passport");
+const { isLoggedIn } = require("../middleware");
 
 // Register Form
 router.get("/register", (req, res) => {
@@ -39,6 +40,7 @@ router.get("/login", (req, res) => {
 });
 
 // Logs in the user
+//TODO: add returnTo thing to every page, not just while using new campground.
 router.post(
   "/login",
   // passport.authenticate('local', config): Inbuilt middleware by passport

@@ -14,7 +14,7 @@ const createTitle = (list) => list[Math.floor(Math.random() * list.length)];
 const getImage = async () => {
   try {
     const image = await axios.get(
-      "https://api.unsplash.com/photos/random/?client_id=HndTSFLUqz0aPWTReGT1Aejq0ZR2ce7WtHQw5hHE0_U&collections=2708059"
+      "https://api.unsplash.com/photos/random/?client_id=HndTSFLUqz0aPWTReGT1Aejq0ZR2ce7WtHQw5hHE0_U&collections=11649432"
     );
     return image.data.urls.small;
   } catch (error) {
@@ -28,6 +28,7 @@ const seedDb = async () => {
     const random1000 = Math.floor(Math.random() * 1000);
     const price = Math.floor(Math.random() * 30);
     await Campground.create({
+      author: "628294e11a46b5d4cffd7541",
       title: `${createTitle(descriptors)} ${createTitle(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
       image: await getImage(),
