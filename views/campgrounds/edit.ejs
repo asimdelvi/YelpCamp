@@ -8,6 +8,7 @@
       method="post"
       class="needs-validation"
       novalidate
+      enctype="multipart/form-data"
     >
       <!-- campground[title], campground[location] will group title and location in a campground object -->
       <!-- parsed data: { campground: { title: 'asdf', location: 'asdf' } } -->
@@ -37,15 +38,15 @@
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please provide a valid Location.</div>
       </div>
+
       <div class="mb-3">
-        <label for="image" class="form-label">Image URL</label>
+        <label for="image" class="form-label">Add more Images</label>
         <input
-          type="text"
-          id="image"
           class="form-control"
-          name="campground[image]"
-          value="<%= campground.image %>"
-          required
+          type="file"
+          id="image"
+          name="image"
+          multiple
         />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please provide a valid Image URL.</div>
@@ -83,6 +84,21 @@
         >
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please provide a valid Description.</div>
+      </div>
+      <div class="mb-3">
+        <% campground.images.forEach((image, i) => { %>
+        <img src="<%= image.thumbnail %>" class="img-thumbnail" alt="" />
+        <div class="form-check-inline">
+          <!-- All the values will be added onto the deleteImages array -->
+          <input
+            type="checkbox"
+            id="image-<%= i %>"
+            name="deleteImages[]"
+            value="<%= image.filename %>"
+          />
+        </div>
+        <label for="image-<%= i %>">Delete?</label>
+        <% }) %>
       </div>
       <div class="mb-3">
         <button class="btn btn-info" type="submit">Update campground</button>

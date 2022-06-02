@@ -8,6 +8,7 @@
       method="post"
       class="needs-validation"
       novalidate
+      enctype="multipart/form-data"
     >
       <!-- campground[title], campground[location] will group title and location in a campground object -->
       <!-- parsed data: { campground: { title: 'asdf', location: 'asdf' } } -->
@@ -38,13 +39,13 @@
       </div>
 
       <div class="mb-3">
-        <label for="image" class="form-label">Image URL</label>
+        <label for="image" class="form-label">Add Image(s)</label>
         <input
-          type="text"
-          id="image"
           class="form-control"
-          name="campground[image]"
-          required
+          type="file"
+          id="image"
+          name="image"
+          multiple
         />
         <div class="valid-feedback">Looks good!</div>
         <div class="invalid-feedback">Please provide a valid Image URL.</div>

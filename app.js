@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "Production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const methodOverride = require("method-override");
 const path = require("path");
@@ -69,7 +73,6 @@ app.use((req, res, next) => {
   // for Login, register, logout page display toggle
   // user will be automatically added in the req object, when logged in.
   res.locals.currentUser = req.user;
-  console.log(req.user);
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
   next();

@@ -1,68 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/user");
 const passport = require("passport");
-const { isLoggedIn } = require("../middleware");
+const users = require("../controllers/users");
 
-// Register Form
-router.get("/register", (req, res) => {
-  res.render("users/register");
-});
+router
+  .route("/register")
+  .get(users.renderRegisterForm) // Register Form
+  .post(users.register); // Creates user
 
-// Creates user
-router.post("/register", async (req, res, next) => {
-  try {
-    try {
-      const { username, email, password } = req.body;
-      const user = new User({ username, email });
-      // User.register(user, password): Inbuilt method by passport-local-mongoose
-      const registeredUser = await User.register(user, password);
-      // req.login(registeredUser, callback function): Inbuilt method by passport
-      // to keep the user logged in after registration
-      // By default after successfully registering, user won't be logged in.
-      req.login(registeredUser, (err) => {
-        if (err) return next(err);
-        req.flash("success", "Welcome to Yelp camp");
-        res.redirect("/campgrounds");
-      });
-    } catch (error) {
-      req.flash("error", error.message);
-      res.redirect("/register");
-    }
-  } catch (error) {
-    next(error);
-  }
-});
+router
+  .route("/login")
+  .get(users.renderLoginForm) // Login Form
+  .post(
+    //Inbuilt middleware by passport
+    passport.authenticate("local", {
+      failureFlash: true,
+      failureRedirect: "/login",
+    }),
+    users.login
+  ); // Logs in the user
 
-// Login Form
-router.get("/login", (req, res) => {
-  res.render("users/login");
-});
-
-// Logs in the user
-//TODO: add returnTo thing to every page, not just while using new campground.
-router.post(
-  "/login",
-  // passport.authenticate('local', config): Inbuilt middleware by passport
-  passport.authenticate("local", {
-    failureFlash: true,
-    failureRedirect: "/login",
-  }),
-  (req, res) => {
-    req.flash("success", "Welcome back");
-    // to redirect to previously visited url
-    const redirectUrl = req.session.returnTo || "/campgrounds";
-    delete req.session.returnTo;
-    res.redirect(redirectUrl);
-  }
-);
-
-// Logout the user
-router.get("/logout", (req, res) => {
-  // req.logOut(): Inbuilt middleware by passport
-  req.logOut();
-  req.flash("success", "Goodbye");
-  res.redirect("/campgrounds");
-});
+router.get("/logout", users.logout); // Logout the user
 
 module.exports = router;
