@@ -1,5 +1,7 @@
 if (process.env.NODE_ENV !== "Production") {
+  // dotenv will add all the .env file data into process.env object so we can use process.env in different files.
   require("dotenv").config();
+  // TODO: know about dotenv
 }
 
 const express = require("express");

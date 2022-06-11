@@ -31,18 +31,19 @@ const seedDb = async () => {
       author: "628294e11a46b5d4cffd7541",
       title: `${createTitle(descriptors)} ${createTitle(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
+      geometry: { type: "Point", coordinates: [76.09927, 13.007082] },
       // image: await getImage(),
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam neque vitae quisquam saepe amet voluptas facere minima porro, deleniti rerum delectus quibusdam obcaecati atque corrupti sit sequi suscipit, dolorum laboriosam.",
       price,
       images: [
         {
-          url: "https://res.cloudinary.com/dywbs306a/image/upload/v1653933594/YelpCamp/u5pemiiq7zaglcbvzvsx.jpg",
-          filename: "YelpCamp/u5pemiiq7zaglcbvzvsx",
+          url: "https://res.cloudinary.com/dywbs306a/image/upload/v1654782879/YelpCamp/btinr8tvrkituoglsqz7.jpg",
+          filename: "YelpCamp/btinr8tvrkituoglsqz7",
         },
         {
-          url: "https://res.cloudinary.com/dywbs306a/image/upload/v1653933590/YelpCamp/k4tedmbjjnuylmrlskr6.jpg",
-          filename: "YelpCamp/k4tedmbjjnuylmrlskr6",
+          url: "https://res.cloudinary.com/dywbs306a/image/upload/v1654782881/YelpCamp/qam5jrpphfgr1ov3skgg.jpg",
+          filename: "YelpCamp/qam5jrpphfgr1ov3skgg",
         },
       ],
     });

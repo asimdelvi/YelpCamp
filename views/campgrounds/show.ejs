@@ -2,6 +2,12 @@
 
 <link rel="stylesheet" href="/stylesheets/star.css" />
 
+<!-- TODO: - vs = in ejs  -->
+<script>
+  const mapToken = "<%-process.env.MAPBOX_TOKEN %>";
+  const campgroundMap = <%- JSON.stringify(campground) %>;
+</script>
+
 <div class="row">
   <div class="col-6">
     <div class="card mb-3">
@@ -44,7 +50,10 @@
         <p class="card-text"><%= campground.description %></p>
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item"><%= campground.location %></li>
+        <li class="list-group-item">
+          <%= campground.location %> ( <%=
+          campground.geometry.coordinates.reverse() %> )
+        </li>
         <li class="list-group-item">
           Submitted by <%= campground.author.username %>
         </li>
@@ -169,3 +178,7 @@
     <% } %>
   </div>
 </div>
+
+<div class="mb-3" id="map" style="width: 400px; height: 300px"></div>
+
+<script src="/javascripts/showPageMap.js"></script>
