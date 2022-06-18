@@ -24,14 +24,20 @@ const getImage = async () => {
 
 const seedDb = async () => {
   await Campground.deleteMany({});
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 300; i++) {
     const random1000 = Math.floor(Math.random() * 1000);
     const price = Math.floor(Math.random() * 30);
     await Campground.create({
       author: "628294e11a46b5d4cffd7541",
       title: `${createTitle(descriptors)} ${createTitle(places)}`,
       location: `${cities[random1000].city}, ${cities[random1000].state}`,
-      geometry: { type: "Point", coordinates: [76.09927, 13.007082] },
+      geometry: {
+        type: "Point",
+        coordinates: [
+          cities[random1000].longitude,
+          cities[random1000].latitude,
+        ],
+      },
       // image: await getImage(),
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsam neque vitae quisquam saepe amet voluptas facere minima porro, deleniti rerum delectus quibusdam obcaecati atque corrupti sit sequi suscipit, dolorum laboriosam.",
