@@ -53,6 +53,7 @@ app.use(mongoSanitize());
 
 // * Session and Flash
 const sessionConfig = {
+  // it's better to change name of the session id, to prevent hackers to recognize.
   name: "session",
   secret: "highSecurity",
   resave: false,
@@ -60,6 +61,7 @@ const sessionConfig = {
   cookie: {
     // TODO: what is http only
     httpOnly: true,
+    // for https have to use below code,
     // secure: true,
     expires: Date.now() * 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,

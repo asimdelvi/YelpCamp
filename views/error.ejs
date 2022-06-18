@@ -4,6 +4,8 @@
   <div class="alert alert-danger" role="alert">
     <h4 class="alert-heading"><%= err.message %></h4>
     <!-- TODO: PARAGRAPH DATA OUT OF THE BOX -->
+    <% if (process.env.NODE_ENV !== 'production') { %>
     <p><%= err.stack %></p>
+    <% } %>
   </div>
 </div>
