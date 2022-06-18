@@ -14,6 +14,8 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const User = require("./models/user");
+const mongoSanitize = require("express-mongo-sanitize");
+
 // const LocalStrategy = require("passport-local");
 
 const campgroundRoutes = require("./routes/campgrounds");
@@ -45,14 +47,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
+// It prevents the mongo injections
+// it eliminates the special characters like $ from the query/param object
+app.use(mongoSanitize());
+
 // * Session and Flash
 const sessionConfig = {
+  name: "session",
   secret: "highSecurity",
   resave: false,
   saveUninitialized: true,
   cookie: {
     // TODO: what is http only
     httpOnly: true,
+    // secure: true,
     expires: Date.now() * 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
@@ -103,3 +111,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(3090, () => console.log("listening on port 3090"));
+
+// TODO: Integrate infinite scroll or pagination to the index.ejs
