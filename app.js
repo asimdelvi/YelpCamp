@@ -15,6 +15,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const User = require("./models/user");
 const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
 
 // const LocalStrategy = require("passport-local");
 
@@ -47,10 +48,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// It prevents the mongo injections
-// it eliminates the special characters like $ from the query/param object
-app.use(mongoSanitize());
-
 // * Session and Flash
 const sessionConfig = {
   // it's better to change name of the session id, to prevent hackers to recognize.
@@ -69,6 +66,19 @@ const sessionConfig = {
 };
 app.use(session(sessionConfig));
 app.use(flash());
+
+// * Security
+// It prevents the mongo injections
+// it eliminates the special characters like $ from the query/param object
+app.use(mongoSanitize());
+// TODO:Add helmet
+// Helmet helps you secure your Express apps by setting various HTTP headers. It's not a silver bullet, but it can help!
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: false,
+//     crossOriginResourcePolicy: false,
+//   })
+// );
 
 // * Passport
 app.use(passport.initialize());
