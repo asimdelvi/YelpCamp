@@ -135,6 +135,8 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render("error", { err });
 });
 
-app.listen(3090, () => console.log("listening on port 3090"));
+// Heroku will have its default port
+const port = process.env.PORT || 3090;
+app.listen(port, () => console.log(`listening on port ${port}`));
 
 // TODO: Integrate infinite scroll or pagination to the index.ejs
