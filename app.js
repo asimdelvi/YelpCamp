@@ -24,8 +24,8 @@ const campgroundRoutes = require("./routes/campgrounds");
 const reviewRoutes = require("./routes/reviews");
 const userRoutes = require("./routes/users");
 
-const dbUrl = "mongodb://localhost:27017/yelp-camp";
-// const dbUrl = process.env.DB_URL;
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+
 mongoose
   .connect(dbUrl)
   .then(console.log("DB connected"))
@@ -51,11 +51,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
+const secret = process.env.SECRET || "highSecurity";
 // * Session and Flash
 // using mongoDB to store session data.
 const store = MongoStore.create({
   mongoUrl: dbUrl,
-  secret: "highSecurity",
+  secret,
   touchAfter: 24 * 60 * 60,
 });
 
@@ -63,7 +64,7 @@ const sessionConfig = {
   store,
   // it's better to change name of the session id, to prevent hackers to recognize.
   name: "session",
-  secret: "highSecurity",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
